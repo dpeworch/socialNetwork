@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-
+// I am a database
 public class Database {
 
 	public Database() {
