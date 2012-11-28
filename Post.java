@@ -21,5 +21,6 @@ public class Post {
 	String[] hashtags;
 	String[] atTags;
 	int timestamp;
+	boolean pub;
 	
 }

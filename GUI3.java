@@ -8,8 +8,11 @@ import java.awt.event.*;
 public class GUI3 extends JFrame {
 
     private int view = 0;
+	private int userID = -1;
 
     private boolean loggedIn = false; //temporary, just for testing
+	
+	private Database db;
 
     //GUI variables declaration
     private JPanel topPanel;
@@ -96,11 +99,20 @@ public class GUI3 extends JFrame {
             loginPage();
         }
         else{
+			// call function to actually log in
+			// function returns userid -> userID;
+			// userID = db.login(username, password);
+			// if (userID >= 0) {
             loggedIn = true;
             loginLogoutButton.setText("Logout");
             pageTitle.setText("Home Page");
             view = 1;
             homePage();
+			//}
+			// else {
+				// userID = -1;
+				//loginPage();
+			// }
         }
     }
 
@@ -133,7 +145,32 @@ public class GUI3 extends JFrame {
         centerPanel = new JPanel();
         centerPanel.add(new JLabel("EMPTY PAGE!!!"));
         add(centerPanel, BorderLayout.CENTER);
+		
     }
+	
+	private void registerPage() {
+	
+	}
+	
+	private void searchResultPage() {
+	
+	}
+	
+	private void userPage() {
+	
+	}
+	
+	private void yourPage() {
+	
+	}
+	
+	private void subsPage() {
+	
+	}
+	
+	private void forAllPages() {
+		// search, login/logout, notifications
+	}
 
     /**
     * @param args the command line arguments
