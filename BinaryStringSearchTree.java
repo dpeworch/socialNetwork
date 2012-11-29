@@ -1,3 +1,4 @@
+// Seeing if I can duplicate Elisabeth's error.
 
 public class BinaryStringSearchTree {
 
