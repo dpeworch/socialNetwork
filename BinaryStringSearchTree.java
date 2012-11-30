@@ -1,4 +1,6 @@
 
+package socialnetwork;
+
 public class BinaryStringSearchTree {
 
 	public BinaryStringSearchTree() {
