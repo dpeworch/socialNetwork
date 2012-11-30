@@ -1,4 +1,6 @@
 
+package socialnetwork;
+
 public class Post {
 	
 	public Post(String newContent, int newUserID, int timestamp){
