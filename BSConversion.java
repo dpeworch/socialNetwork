@@ -1,4 +1,6 @@
 
+package socialnetwork;
+
 public class BSConversion {
 	
 	public char[] hashtagToChar(String hashtag){
