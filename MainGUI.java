@@ -4,6 +4,8 @@
  */
 package twitterguitheforth;
 
+import java.awt.CardLayout;
+
 /**
  *
  * @author brian
@@ -40,13 +42,21 @@ public class MainGUI extends javax.swing.JFrame {
         LogOutButton = new javax.swing.JButton();
         MainPane = new javax.swing.JPanel();
         MainPagePanel = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
         RegPagePanel = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jTextField3 = new javax.swing.JTextField();
+        jTextField4 = new javax.swing.JTextField();
+        SignUpButton = new javax.swing.JButton();
         MyPagePanel = new javax.swing.JPanel();
         SearchResultsPanel = new javax.swing.JPanel();
         HashResultsPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(800, 600));
 
         ToolBarPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         ToolBarPanel.setLayout(new java.awt.CardLayout());
@@ -60,6 +70,11 @@ public class MainGUI extends javax.swing.JFrame {
         LogInButton.setText("Log In");
 
         RegisterButton.setText("Register");
+        RegisterButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RegisterButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout UnloggedToolbarPanelLayout = new javax.swing.GroupLayout(UnloggedToolbarPanel);
         UnloggedToolbarPanel.setLayout(UnloggedToolbarPanelLayout);
@@ -127,28 +142,88 @@ public class MainGUI extends javax.swing.JFrame {
         MainPane.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         MainPane.setLayout(new java.awt.CardLayout());
 
+        jLabel1.setFont(new java.awt.Font("Ubuntu", 0, 36)); // NOI18N
+        jLabel1.setText("Welcome to Not-Twitter!");
+
+        jLabel2.setText("Click Log In or Register to access your account");
+
+        jLabel3.setText("or just search for someone or something");
+
         javax.swing.GroupLayout MainPagePanelLayout = new javax.swing.GroupLayout(MainPagePanel);
         MainPagePanel.setLayout(MainPagePanelLayout);
         MainPagePanelLayout.setHorizontalGroup(
             MainPagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 796, Short.MAX_VALUE)
+            .addGroup(MainPagePanelLayout.createSequentialGroup()
+                .addGap(144, 144, 144)
+                .addGroup(MainPagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel1))
+                .addContainerGap(245, Short.MAX_VALUE))
         );
         MainPagePanelLayout.setVerticalGroup(
             MainPagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 541, Short.MAX_VALUE)
+            .addGroup(MainPagePanelLayout.createSequentialGroup()
+                .addGap(142, 142, 142)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel3)
+                .addContainerGap(309, Short.MAX_VALUE))
         );
 
         MainPane.add(MainPagePanel, "card2");
+
+        jLabel4.setFont(new java.awt.Font("Ubuntu", 0, 36)); // NOI18N
+        jLabel4.setText("Start an Account");
+
+        jLabel5.setText("Username");
+
+        jLabel6.setText("Password");
+
+        jTextField3.setText("jTextField3");
+
+        jTextField4.setText("jTextField4");
+
+        SignUpButton.setText("Start!");
 
         javax.swing.GroupLayout RegPagePanelLayout = new javax.swing.GroupLayout(RegPagePanel);
         RegPagePanel.setLayout(RegPagePanelLayout);
         RegPagePanelLayout.setHorizontalGroup(
             RegPagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 796, Short.MAX_VALUE)
+            .addGroup(RegPagePanelLayout.createSequentialGroup()
+                .addGap(89, 89, 89)
+                .addGroup(RegPagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(RegPagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jLabel4)
+                        .addGroup(RegPagePanelLayout.createSequentialGroup()
+                            .addGroup(RegPagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jLabel5)
+                                .addComponent(jLabel6))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(RegPagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jTextField3)
+                                .addComponent(jTextField4))))
+                    .addComponent(SignUpButton, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(436, Short.MAX_VALUE))
         );
         RegPagePanelLayout.setVerticalGroup(
             RegPagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 541, Short.MAX_VALUE)
+            .addGroup(RegPagePanelLayout.createSequentialGroup()
+                .addGap(73, 73, 73)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(RegPagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(RegPagePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(SignUpButton)
+                .addContainerGap(310, Short.MAX_VALUE))
         );
 
         MainPane.add(RegPagePanel, "card3");
@@ -197,7 +272,7 @@ public class MainGUI extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(ToolBarPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(MainPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(MainPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -209,6 +284,12 @@ public class MainGUI extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void RegisterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RegisterButtonActionPerformed
+        // TODO add your handling code here:
+        CardLayout cl = (CardLayout)(MainPane.getLayout());
+        cl.show(MainPane,"card3");
+    }//GEN-LAST:event_RegisterButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -257,11 +338,20 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JPanel RegPagePanel;
     private javax.swing.JButton RegisterButton;
     private javax.swing.JPanel SearchResultsPanel;
+    private javax.swing.JButton SignUpButton;
     private javax.swing.JPanel ToolBarPanel;
     private javax.swing.JButton UnloggedHashButton;
     private javax.swing.JButton UnloggedSearchButton;
     private javax.swing.JPanel UnloggedToolbarPanel;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField jTextField4;
     // End of variables declaration//GEN-END:variables
 }
