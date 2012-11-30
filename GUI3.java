@@ -23,12 +23,15 @@ public class GUI3 extends JFrame {
     private JTextField searchField;
     private JButton searchButton;
     private JButton userPageButton;
+    private JButton addPostButton;
     private JButton registerButton;
     private JButton loginLogoutButton;
     private JLabel pageTitle;
-    
-    //Login and Register variable declarations
+
+    private JPanel centerPanel;
     private JPanel formPanel;
+
+    //Login and Register variable declarations
     private JLabel usernameLabel;
     private JTextField usernameField;
     private JLabel passwordLabel;
@@ -37,8 +40,16 @@ public class GUI3 extends JFrame {
     private JTextField emailField;
     private JButton registerSubmit;
     private JButton loginSubmit;
-    
-    private JPanel centerPanel;
+    private JPanel buttonPanel;
+
+
+    JLabel[] tweeters = new JLabel[2];
+    JLabel[] messages = new JLabel[2];
+    JButton older;
+    JButton newer;
+
+
+
     
     public GUI3() {
         initComponents();
@@ -58,22 +69,31 @@ public class GUI3 extends JFrame {
         userPageButton = new JButton("My Page");
         userPageButton.setPreferredSize(new Dimension(85, 30));
         userPageButton.setEnabled(false);
-        registerButton = new JButton("Register");
-        registerButton.setPreferredSize(new Dimension(85, 30));
-        loginLogoutButton = new JButton("Login");
-        loginLogoutButton.setPreferredSize(new Dimension(75, 30));
+        addPostButton = new JButton("Post");
+        addPostButton.setPreferredSize(new Dimension(85, 30));
+        addPostButton.setEnabled(false);
+        registerButton = new JButton("Register Page");
+        registerButton.setPreferredSize(new Dimension(115, 30));
+        loginLogoutButton = new JButton("Login Page");
+        loginLogoutButton.setPreferredSize(new Dimension(100, 30));
         userBar.add(searchField);
         userBar.add(searchButton);
         userBar.add(userPageButton);
+        userBar.add(addPostButton);
         userBar.add(registerButton);
         userBar.add(loginLogoutButton);
         title = new JPanel();
         pageTitle = new JLabel("Welcome to Not-Twitter!");
         pageTitle.setFont(new Font("Serif", Font.PLAIN, 24));
         title.add(pageTitle);
-        topPanel.add(userBar, BorderLayout.PAGE_START);
-        topPanel.add(title, BorderLayout.PAGE_END);
+        topPanel.add(userBar, BorderLayout.NORTH);
+        topPanel.add(title, BorderLayout.SOUTH);
         add(topPanel, BorderLayout.PAGE_START);
+
+        formPanel = new JPanel(new FormLayout(windowWidth));
+        centerPanel = new JPanel(new BorderLayout());
+        add(centerPanel, BorderLayout.CENTER);
+        buttonPanel = new JPanel(new FlowLayout());
 
         usernameLabel = new JLabel("Enter your username: ");
         usernameField = new JTextField(15);
@@ -85,6 +105,20 @@ public class GUI3 extends JFrame {
         registerSubmit.setPreferredSize(new Dimension(85, 30));
         loginSubmit = new JButton("Login");
         loginSubmit.setPreferredSize(new Dimension(85, 30));
+
+        tweeters[0] = new JLabel("First Person");
+        tweeters[0].setForeground(Color.BLUE);
+        tweeters[1] = new JLabel("Second Person");
+        tweeters[1].setForeground(Color.BLUE);
+        messages[0] = new JLabel("I am going to the mall #beermall");
+        messages[1] = new JLabel("I am going to the beer #mallbeer");
+        older = new JButton("OLDER");
+        older.setPreferredSize(new Dimension(85, 30));
+        newer = new JButton("NEWER");
+        newer.setPreferredSize(new Dimension(85, 30));
+
+        db.addNewUser("person", "secret");
+
         registerPage();
 
         searchButton.addActionListener(new ActionListener() {
@@ -123,7 +157,7 @@ public class GUI3 extends JFrame {
             }
         });
 
-        pack();
+        //pack();
     }
 
     private void searchActionPerformed(ActionEvent evt) {
@@ -136,20 +170,17 @@ public class GUI3 extends JFrame {
 
     private void registerActionPerformed(ActionEvent evt) {
         registerPage();
-        System.out.println("BUBBA");
     }
 
     private void loginLogoutActionPerformed(ActionEvent evt) {
         if (loggedIn) {
             loggedIn = false;
-            loginLogoutButton.setText("Login");
+            loginLogoutButton.setText("Login Page");
             userPageButton.setEnabled(false);
+            addPostButton.setEnabled(false);
             registerButton.setEnabled(true);
-            registerPage();
         }
-        else{
-            loginPage();
-        }
+        loginPage();
     }
     
     private void registerSubmitActionPerformed(ActionEvent evt) {
@@ -161,11 +192,21 @@ public class GUI3 extends JFrame {
 	// function returns userid -> userID;
 	// userID = db.login(username, password);
 	// if (userID >= 0) {
-        loggedIn = true;
-        loginLogoutButton.setText("Logout");
-        userPageButton.setEnabled(true);
-        registerButton.setEnabled(false);
-        homePage();
+
+        String username = usernameField.getText();
+        String password = passwordField.getText();
+        userID = db.findUser(username, password);
+        if (userID >= 0) {
+            loggedIn = true;
+            loginLogoutButton.setText("Logout");
+            userPageButton.setEnabled(true);
+            registerButton.setEnabled(false);
+            addPostButton.setEnabled(true);
+            homePage();
+        }
+        else {
+            loginPage();
+        }
 	//}
 	// else {
 	// userID = -1;
@@ -175,53 +216,64 @@ public class GUI3 extends JFrame {
 
     private void homePage() { //hardcoded for now
         pageTitle.setText("Home Page");
-        centerPanel = new JPanel(new GridLayout(10,1));
-        JPanel[] tweets = new JPanel[2];
-        JLabel[] tweeters = new JLabel[2];
-        JLabel[] messages = new JLabel[2];
-        tweets[0] = new JPanel(new FlowLayout());
-        tweets[1] = new JPanel(new FlowLayout());
-        tweeters[0] = new JLabel("Person");
-        tweeters[0].setForeground(Color.BLUE);
-        tweeters[1] = new JLabel("Other Person");
-        tweeters[1].setForeground(Color.BLUE);
-        messages[0] = new JLabel("I am going to the mall #beermall");
-        messages[1] = new JLabel("I am going to the beer #mallbeer");
-        tweets[0].add(tweeters[0]);
-        tweets[0].add(messages[0]);
-        tweets[1].add(tweeters[1]);
-        tweets[1].add(messages[1]);
-        centerPanel.add(tweets[0]);
-        centerPanel.add(tweets[1]);
-        add(centerPanel, BorderLayout.CENTER);
+        formPanel.removeAll();
+        buttonPanel.removeAll();
+        centerPanel.removeAll();
+        formPanel.add(tweeters[0], 0, 0);
+        formPanel.add(messages[0], 0, 1);
+        formPanel.add(tweeters[1], 0, 0);
+        formPanel.add(messages[1], 0, 1);
+        buttonPanel.add(older);
+        buttonPanel.add(newer);
+        centerPanel.add(formPanel, BorderLayout.NORTH);
+        centerPanel.add(buttonPanel, BorderLayout.CENTER);
+        older.setVisible(true);
+        newer.setVisible(true);
+        registerSubmit.setVisible(false);
+        loginSubmit.setVisible(false);
     }
 
     private void registerPage() {
         pageTitle.setText("Welcome to Not-Twitter!  Register here.");
-        centerPanel = new JPanel(new FlowLayout());
-        formPanel = new JPanel(new GridLayout(3,2));
+        formPanel.removeAll();
+        buttonPanel.removeAll();
+        centerPanel.removeAll();
         formPanel.add(usernameLabel);
         formPanel.add(usernameField);
         formPanel.add(passwordLabel);
         formPanel.add(passwordField);
         formPanel.add(emailLabel);
         formPanel.add(emailField);
-        centerPanel.add(formPanel);
-        centerPanel.add(registerSubmit);
-        add(centerPanel, BorderLayout.CENTER);
+        buttonPanel.add(registerSubmit);
+        centerPanel.add(formPanel, BorderLayout.NORTH);
+        centerPanel.add(buttonPanel, BorderLayout.CENTER);
+        registerSubmit.setVisible(true);
+        loginSubmit.setVisible(false);
+        older.setVisible(false);
+        newer.setVisible(false);
+        usernameField.setText("");
+        passwordField.setText("");
+        emailField.setText("");
     }
 
     private void loginPage() {
         pageTitle.setText("Welcome to Not-Twitter!  Login here.");
-        centerPanel = new JPanel(new FlowLayout());
-        formPanel = new JPanel(new GridLayout(2,2));
+        formPanel.removeAll();
+        buttonPanel.removeAll();
+        centerPanel.removeAll();
         formPanel.add(usernameLabel);
         formPanel.add(usernameField);
         formPanel.add(passwordLabel);
         formPanel.add(passwordField);
-        centerPanel.add(formPanel);
-        centerPanel.add(loginSubmit);
-        add(centerPanel, BorderLayout.CENTER);
+        buttonPanel.add(loginSubmit);
+        centerPanel.add(formPanel, BorderLayout.NORTH);
+        centerPanel.add(buttonPanel, BorderLayout.CENTER);
+        loginSubmit.setVisible(true);
+        registerSubmit.setVisible(false);
+        older.setVisible(false);
+        newer.setVisible(false);
+        usernameField.setText("");
+        passwordField.setText("");
     }
 
     private void searchResultPage() {
