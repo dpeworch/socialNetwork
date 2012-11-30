@@ -1,3 +1,6 @@
+
+package socialnetwork;
+
 import java.util.ArrayList;
 
 // I am a database
