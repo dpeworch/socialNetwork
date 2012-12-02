@@ -193,7 +193,7 @@ public class Database {
         Iterator<User> i = users.listIterator();
         while (i.hasNext()) {
             current = i.next();
-            if (current.getUsername().equals(username) && current.getUsername().equals(password)) {
+            if (current.getUsername().equals(username) && current.getPassword().equals(password)) {
                 return current;
             }
         }
