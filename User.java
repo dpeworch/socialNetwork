@@ -11,6 +11,12 @@ public class User {
             this.username = username;
             this.password = password;
             loggedIn = false;
+			subscriptions = new ArrayList();
+	}
+	
+	public void addSub(int subid){
+		subscriptions.ensureCapacity(subscriptions.size());
+		subscriptions.add(subid);
 	}
 	
 	int id;
