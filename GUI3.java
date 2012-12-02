@@ -9,56 +9,49 @@ public class GUI3 extends JFrame {
     
     private static int windowWidth = 800;
     private static int windowHeight = 600;
-    
-    private int userID;
-    
-    private boolean loggedIn = false; //temporary, just for testing
-    
     private Database db;
+    private User currentUser = null;
     
     //User Bar variable declarations
     private JPanel topPanel; //information displayed at the top of the screen, composed of userBar and title
     private JPanel userBar; //a button panel with user options
     private JPanel title; //panel for the page title
-    private JTextField searchField;
-    private JButton searchButton;
-    private JButton userPageButton;
-    private JButton addPostButton;
-    private JButton registerButton;
-    private JButton loginLogoutButton;
-    private JLabel pageTitle;
+    private JTextField searchField; //in UserBar
+    private JButton searchButton; //in UserBar
+    private JButton userPageButton; //in UserBar
+    private JButton addPostButton; //in UserBar
+    private JButton registerButton; //in UserBar
+    private JButton loginLogoutButton; //in UserBar
+    private JLabel pageTitle; //in title
 
-    private JPanel centerPanel;
-    private JPanel formPanel;
+    private JPanel centerPanel; //main panel for all pages
+    private JPanel formPanel; //panel for forms
 
     //Login and Register variable declarations
-    private JLabel usernameLabel;
-    private JTextField usernameField;
-    private JLabel passwordLabel;
-    private JTextField passwordField;
-    private JLabel emailLabel;
-    private JTextField emailField;
-    private JButton registerSubmit;
-    private JButton loginSubmit;
-    private JPanel buttonPanel;
+    private JLabel usernameLabel; //label for username field
+    private JTextField usernameField; //field for entering username
+    private JLabel passwordLabel; //label for password field
+    private JPasswordField passwordField; //field for entering password
+    private JLabel emailLabel; //label for email field
+    private JTextField emailField; //field for entering email
+    private JButton registerSubmit; //submit button for registering
+    private JButton loginSubmit; //submit button for logging in
+    private JPanel buttonPanel; //panel for submiting form info or displaying different tweets
 
+    private JPanel messagePanel; //panel for displaying error messages
+    private JLabel message; //label for displaying an error message
 
-    JLabel[] tweeters = new JLabel[2];
-    JLabel[] messages = new JLabel[2];
-    JButton older;
-    JButton newer;
+    private JLabel[] tweeters = new JLabel[2]; //hardcoded tweet posters
+    private JLabel[] tweetBody = new JLabel[2]; //hardcoded tweet messages
+    private JButton older; //button to show older tweets
+    private JButton newer; //button to show newer tweets
 
-
-
-    
     public GUI3() {
         initComponents();
     }
     
     private void initComponents() {
-        db = new Database();
-        userID = -1;
-        
+        db = new Database();        
         setLayout(new BorderLayout());
         topPanel = new JPanel(new BorderLayout());
         userBar = new JPanel();
@@ -83,7 +76,7 @@ public class GUI3 extends JFrame {
         userBar.add(registerButton);
         userBar.add(loginLogoutButton);
         title = new JPanel();
-        pageTitle = new JLabel("Welcome to Not-Twitter!");
+        pageTitle = new JLabel();
         pageTitle.setFont(new Font("Serif", Font.PLAIN, 24));
         title.add(pageTitle);
         topPanel.add(userBar, BorderLayout.NORTH);
@@ -98,7 +91,7 @@ public class GUI3 extends JFrame {
         usernameLabel = new JLabel("Enter your username: ");
         usernameField = new JTextField(15);
         passwordLabel = new JLabel("Enter your password: ");
-        passwordField = new JTextField(15);
+        passwordField = new JPasswordField(15);
         emailLabel = new JLabel("Enter your email address: ");
         emailField = new JTextField(15);
         registerSubmit = new JButton("Register");
@@ -106,20 +99,23 @@ public class GUI3 extends JFrame {
         loginSubmit = new JButton("Login");
         loginSubmit.setPreferredSize(new Dimension(85, 30));
 
+        messagePanel = new JPanel();
+        message = new JLabel();
+        message.setFont(new Font("Serif", Font.PLAIN, 18));
+        messagePanel.add(message);
+
         tweeters[0] = new JLabel("First Person");
         tweeters[0].setForeground(Color.BLUE);
         tweeters[1] = new JLabel("Second Person");
         tweeters[1].setForeground(Color.BLUE);
-        messages[0] = new JLabel("I am going to the mall #beermall");
-        messages[1] = new JLabel("I am going to the beer #mallbeer");
+        tweetBody[0] = new JLabel("I am going to the mall #beermall");
+        tweetBody[1] = new JLabel("I am going to the beer #mallbeer");
         older = new JButton("OLDER");
         older.setPreferredSize(new Dimension(85, 30));
         newer = new JButton("NEWER");
         newer.setPreferredSize(new Dimension(85, 30));
 
-        db.addNewUser("person", "secret");
-
-        registerPage();
+        registerPage(-1);
 
         searchButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
@@ -169,35 +165,37 @@ public class GUI3 extends JFrame {
     }
 
     private void registerActionPerformed(ActionEvent evt) {
-        registerPage();
+        registerPage(-1);
     }
 
     private void loginLogoutActionPerformed(ActionEvent evt) {
-        if (loggedIn) {
-            loggedIn = false;
+        if (currentUser != null) {
+            currentUser.loggedIn = false;
+            currentUser = null;
             loginLogoutButton.setText("Login Page");
             userPageButton.setEnabled(false);
             addPostButton.setEnabled(false);
             registerButton.setEnabled(true);
         }
-        loginPage();
+        loginPage(false);
     }
     
     private void registerSubmitActionPerformed(ActionEvent evt) {
-        
+        String username = usernameField.getText();
+        String password = new String(passwordField.getPassword());
+        String email = emailField.getText();
+        int situation = db.validateRegistrationInfo(username, password, email);
+        if (situation == 5) {
+            db.addNewUser(username, password, email);
+        }
+        registerPage(situation);
     }
     
     private void loginSubmitActionPerformed(ActionEvent evt) {
-	// call function to actually log in
-	// function returns userid -> userID;
-	// userID = db.login(username, password);
-	// if (userID >= 0) {
-
         String username = usernameField.getText();
-        String password = passwordField.getText();
-        userID = db.findUser(username, password);
-        if (userID >= 0) {
-            loggedIn = true;
+        currentUser = db.findUser(username);
+        if (currentUser != null) {
+            currentUser.loggedIn = true;
             loginLogoutButton.setText("Logout");
             userPageButton.setEnabled(true);
             registerButton.setEnabled(false);
@@ -205,24 +203,19 @@ public class GUI3 extends JFrame {
             homePage();
         }
         else {
-            loginPage();
+            loginPage(true);
         }
-	//}
-	// else {
-	// userID = -1;
-	//loginPage();
-	// }
     }
 
     private void homePage() { //hardcoded for now
-        pageTitle.setText("Home Page");
+        pageTitle.setText("Home Page of " + currentUser.username);
         formPanel.removeAll();
         buttonPanel.removeAll();
         centerPanel.removeAll();
         formPanel.add(tweeters[0], 0, 0);
-        formPanel.add(messages[0], 0, 1);
+        formPanel.add(tweetBody[0], 0, 1);
         formPanel.add(tweeters[1], 0, 0);
-        formPanel.add(messages[1], 0, 1);
+        formPanel.add(tweetBody[1], 0, 1);
         buttonPanel.add(older);
         buttonPanel.add(newer);
         centerPanel.add(formPanel, BorderLayout.NORTH);
@@ -233,7 +226,7 @@ public class GUI3 extends JFrame {
         loginSubmit.setVisible(false);
     }
 
-    private void registerPage() {
+    private void registerPage(int situation) {
         pageTitle.setText("Welcome to Not-Twitter!  Register here.");
         formPanel.removeAll();
         buttonPanel.removeAll();
@@ -247,16 +240,47 @@ public class GUI3 extends JFrame {
         buttonPanel.add(registerSubmit);
         centerPanel.add(formPanel, BorderLayout.NORTH);
         centerPanel.add(buttonPanel, BorderLayout.CENTER);
+        centerPanel.add(messagePanel, BorderLayout.SOUTH);
+        if (situation == -1) {
+            message.setText("");
+            usernameField.setText("");
+            passwordField.setText("");
+            emailField.setText("");
+        }
+        else if (situation == 0) {
+            message.setForeground(Color.RED);
+            message.setText("You forgot to enter at least one of the fields.  Please try again.");
+        }
+        else if (situation == 1) {
+            message.setForeground(Color.RED);
+            message.setText("There is already a user with that username.  Please pick a different username.");
+        }
+        else if (situation == 2) {
+            message.setForeground(Color.RED);
+            message.setText("Your username cannot contain a space.  Please try again.");
+        }
+        else if (situation == 3) {
+            message.setForeground(Color.RED);
+            message.setText("Your password cannot contain a space.  Please try again.");
+        }
+        else if (situation == 4) {
+            message.setForeground(Color.RED);
+            message.setText("Your email is not in the correct form.  Please try again.");
+        }
+        else{
+            message.setForeground(Color.GREEN);
+            message.setText("You were registered successfully!");
+            usernameField.setText("");
+            passwordField.setText("");
+            emailField.setText("");
+        }
         registerSubmit.setVisible(true);
         loginSubmit.setVisible(false);
         older.setVisible(false);
         newer.setVisible(false);
-        usernameField.setText("");
-        passwordField.setText("");
-        emailField.setText("");
     }
 
-    private void loginPage() {
+    private void loginPage(boolean error) {
         pageTitle.setText("Welcome to Not-Twitter!  Login here.");
         formPanel.removeAll();
         buttonPanel.removeAll();
@@ -268,6 +292,14 @@ public class GUI3 extends JFrame {
         buttonPanel.add(loginSubmit);
         centerPanel.add(formPanel, BorderLayout.NORTH);
         centerPanel.add(buttonPanel, BorderLayout.CENTER);
+        centerPanel.add(messagePanel, BorderLayout.SOUTH);
+        if (error) {
+            message.setForeground(Color.RED);
+            message.setText("You entered the wrong username or password.  Try again.");
+        }
+        else{
+            message.setText("");
+        }
         loginSubmit.setVisible(true);
         registerSubmit.setVisible(false);
         older.setVisible(false);
