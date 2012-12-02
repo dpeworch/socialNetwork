@@ -13,6 +13,8 @@ public class Database {
     String filename = "C://Users/David/NetBeansProjects/socialNetwork/src/socialnetwork/users.txt"; //or whatever the path is
     String filename2 = "posts.txt";
     int maxID = -1;
+    
+    int searchIndex; // index for searches spanning multiple function calls, used for getting posts, then getting more posts, then more, etc.
 
     ArrayList<Post> posts;
     ArrayList<User> users;
@@ -102,11 +104,28 @@ public class Database {
     public Post getSinglePost(int postID){
     	for(int i=0; i<posts.size(); i++){
     		if(posts.get(i).postID == postID){
-    			return posts.get(i);
+    			if(posts.get(i).pub){
+    				return posts.get(i);
+    			} else {
+    				// if user is subscribed to the user who posted the post
+    				if(findUser(currentUser).subscriptions.contains(posts.get(i).userID)){
+    					return posts.get(i);
+    				} else {
+    					return null;
+    				}
+    			}
     		}
     	}
     	
-    	return new Post(); // returns a post with id -1 and content "Post not found."
+    	return null;
+    }
+    
+    public Post[] getPostsByUser(int uid, int page){ // page should start at 1
+    	return null;
+    }
+    
+    public Post[] getPostsFromSubs(int page){ // page should start at 1
+    	return null;
     }
     
 
@@ -164,6 +183,18 @@ public class Database {
         while (i.hasNext()) {
             current = i.next();
             if (current.username.equals(username)) {
+                return current;
+            }
+        }
+        return null;
+    }
+    
+    public User findUser(int uid) {
+        User current = null;
+        Iterator<User> i = users.listIterator();
+        while (i.hasNext()) {
+            current = i.next();
+            if (current.id == uid) {
                 return current;
             }
         }
