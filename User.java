@@ -15,8 +15,15 @@ public class User {
 	}
 	
 	public void addSub(int subid){
-		subscriptions.ensureCapacity(subscriptions.size());
+		subscriptions.ensureCapacity(subscriptions.size() + 1);
 		subscriptions.add(subid);
+	}
+	
+	public void addManySubs(int[] subids){
+		subscriptions.ensureCapacity(subscriptions.size() + subids.length);
+		for(int i=0; i<subids.length; i++){
+			subscriptions.add(subids[i]);
+		}
 	}
 	
 	int id;
