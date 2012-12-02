@@ -7,6 +7,7 @@ import java.util.Scanner;
 import java.io.*;
 
 // I am a database
+//github sucks, I know
 public class Database {
 
     String filename = "C://Users/David/NetBeansProjects/socialNetwork/src/socialnetwork/users.txt"; //or whatever the path is
