@@ -170,7 +170,7 @@ public class GUI3 extends JFrame {
 
     private void loginLogoutActionPerformed(ActionEvent evt) {
         if (currentUser != null) {
-            currentUser.loggedIn = false;
+            db.logout(currentUser);
             currentUser = null;
             loginLogoutButton.setText("Login Page");
             userPageButton.setEnabled(false);
@@ -195,7 +195,7 @@ public class GUI3 extends JFrame {
         String username = usernameField.getText();
         currentUser = db.findUser(username);
         if (currentUser != null) {
-            currentUser.loggedIn = true;
+            db.login(currentUser);
             loginLogoutButton.setText("Logout");
             userPageButton.setEnabled(true);
             registerButton.setEnabled(false);
