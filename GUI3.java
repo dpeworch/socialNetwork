@@ -191,7 +191,8 @@ public class GUI3 extends JFrame {
     
     private void loginSubmitActionPerformed(ActionEvent evt) {
         String username = usernameField.getText();
-        User current = db.findUser(username);
+        String password = new String(passwordField.getPassword());
+        User current = db.findUser(username, password);
         if (current != null) {
             db.login(current);
             loginLogoutButton.setText("Logout");
@@ -206,7 +207,7 @@ public class GUI3 extends JFrame {
     }
 
     private void homePage() { //hardcoded for now
-        pageTitle.setText("Home Page of " + db.getCurrentUser().username);
+        pageTitle.setText("Home Page of " + db.getCurrentUser().getUsername());
         formPanel.removeAll();
         buttonPanel.removeAll();
         centerPanel.removeAll();
