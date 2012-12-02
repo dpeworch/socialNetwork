@@ -9,16 +9,16 @@ import java.io.*;
 // I am a database
 public class Database {
 
-    String filename = "C://Users/David/NetBeansProjects/socialNetwork/src/socialnetwork/users.txt"; //or whatever the path is
-    String filename2 = "posts.txt";
-    int maxID = -1;
+    private String filename = "C://Users/David/NetBeansProjects/socialNetwork/src/socialnetwork/users.txt"; //or whatever the path is
+    private String filename2 = "posts.txt";
+    private int maxID = -1;
     
-    int searchIndex; // index for searches spanning multiple function calls, used for getting posts, then getting more posts, then more, etc.
+    private int searchIndex; // index for searches spanning multiple function calls, used for getting posts, then getting more posts, then more, etc.
 
-    ArrayList<Post> posts;
-    ArrayList<User> users;
-    BinaryStringSearchTree tags;
-    User currentUser;
+    private ArrayList<Post> posts;
+    private ArrayList<User> users;
+    private BinaryStringSearchTree tags;
+    private User currentUser;
 
     public Database() {
         posts = new ArrayList<Post>();
@@ -107,7 +107,7 @@ public class Database {
     				return posts.get(i);
     			} else {
     				// if user is subscribed to the user who posted the post
-    				if(currentUser != null && findUser(currentUser.id).subscriptions.contains(posts.get(i).userID)){
+    				if(currentUser != null && findUser(currentUser.getUsername()).getSubsAsArrayList().contains(posts.get(i).userID)){
     					return posts.get(i);
     				} else {
     					return null;
@@ -181,19 +181,32 @@ public class Database {
         Iterator<User> i = users.listIterator();
         while (i.hasNext()) {
             current = i.next();
-            if (current.username.equals(username)) {
+            if (current.getUsername().equals(username)) {
                 return current;
             }
         }
         return null;
     }
-    
+
+    public User findUser(String username, String password) {
+        User current = null;
+        Iterator<User> i = users.listIterator();
+        while (i.hasNext()) {
+            current = i.next();
+            if (current.getUsername().equals(username) && current.getUsername().equals(password)) {
+                return current;
+            }
+        }
+        return null;
+    }
+
+    //don't think this function is needed
     public User findUser(int uid) {
         User current = null;
         Iterator<User> i = users.listIterator();
         while (i.hasNext()) {
             current = i.next();
-            if (current.id == uid) {
+            if (current.getUserId() == uid) {
                 return current;
             }
         }
