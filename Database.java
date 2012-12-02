@@ -7,7 +7,6 @@ import java.util.Scanner;
 import java.io.*;
 
 // I am a database
-//github sucks, I know
 public class Database {
 
     String filename = "C://Users/David/NetBeansProjects/socialNetwork/src/socialnetwork/users.txt"; //or whatever the path is
@@ -19,14 +18,14 @@ public class Database {
     ArrayList<Post> posts;
     ArrayList<User> users;
     BinaryStringSearchTree tags;
-    int currentUser;
+    User currentUser;
 
     public Database() {
         posts = new ArrayList<Post>();
         users = new ArrayList<User>();
         tags = new BinaryStringSearchTree();
+        currentUser = null;
         addExistingUsers();
-        currentUser = -1;
     }
 
     // GUI should contain who is currently logged in
@@ -108,7 +107,7 @@ public class Database {
     				return posts.get(i);
     			} else {
     				// if user is subscribed to the user who posted the post
-    				if(findUser(currentUser).subscriptions.contains(posts.get(i).userID)){
+    				if(currentUser != null && findUser(currentUser.id).subscriptions.contains(posts.get(i).userID)){
     					return posts.get(i);
     				} else {
     					return null;
@@ -236,14 +235,14 @@ public class Database {
     }
 
     public void login(User user) {
-        user.loggedIn = true;
-        currentUser = user.id;
-
+        currentUser = user;
     }
 
-    public void logout(User user) {
-        user.loggedIn = false;
-        currentUser = -1;
+    public void logout() {
+        currentUser = null;
+    }
 
+    public User getCurrentUser() {
+        return currentUser;
     }
 }
