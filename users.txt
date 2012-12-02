@@ -1,1 +1,3 @@
-0 person secret
+0	person	1234	none
+1	person2	5678	none2
+2	person3	0987	none3
