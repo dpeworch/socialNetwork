@@ -10,7 +10,6 @@ public class GUI3 extends JFrame {
     private static int windowWidth = 800;
     private static int windowHeight = 600;
     private Database db;
-    private User currentUser = null;
     
     //User Bar variable declarations
     private JPanel topPanel; //information displayed at the top of the screen, composed of userBar and title
@@ -169,9 +168,8 @@ public class GUI3 extends JFrame {
     }
 
     private void loginLogoutActionPerformed(ActionEvent evt) {
-        if (currentUser != null) {
-            db.logout(currentUser);
-            currentUser = null;
+        if (db.getCurrentUser() != null) {
+            db.logout();
             loginLogoutButton.setText("Login Page");
             userPageButton.setEnabled(false);
             addPostButton.setEnabled(false);
@@ -193,9 +191,9 @@ public class GUI3 extends JFrame {
     
     private void loginSubmitActionPerformed(ActionEvent evt) {
         String username = usernameField.getText();
-        currentUser = db.findUser(username);
-        if (currentUser != null) {
-            db.login(currentUser);
+        User current = db.findUser(username);
+        if (current != null) {
+            db.login(current);
             loginLogoutButton.setText("Logout");
             userPageButton.setEnabled(true);
             registerButton.setEnabled(false);
@@ -208,7 +206,7 @@ public class GUI3 extends JFrame {
     }
 
     private void homePage() { //hardcoded for now
-        pageTitle.setText("Home Page of " + currentUser.username);
+        pageTitle.setText("Home Page of " + db.getCurrentUser().username);
         formPanel.removeAll();
         buttonPanel.removeAll();
         centerPanel.removeAll();
