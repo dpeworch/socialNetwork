@@ -10,8 +10,7 @@ public class User {
             this.id = id;
             this.username = username;
             this.password = password;
-            loggedIn = false;
-			subscriptions = new ArrayList<Integer>();
+            subscriptions = new ArrayList<Integer>();
 	}
 	
 	public void addSub(int subid){
@@ -30,5 +29,4 @@ public class User {
 	String username;
 	String password;
 	ArrayList<Integer> subscriptions;
-	boolean loggedIn;
 }
