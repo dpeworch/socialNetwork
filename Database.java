@@ -11,35 +11,71 @@ import java.io.*;
 public class Database {
 
     String filename = "C://Users/David/NetBeansProjects/socialNetwork/src/socialnetwork/users.txt"; //or whatever the path is
+    String filename2 = "posts.txt";
     int maxID = -1;
 
     ArrayList<Post> posts;
     ArrayList<User> users;
     BinaryStringSearchTree tags;
+    int currentUser;
 
     public Database() {
         posts = new ArrayList<Post>();
         users = new ArrayList<User>();
         tags = new BinaryStringSearchTree();
         addExistingUsers();
+        currentUser = -1;
     }
 
     // GUI should contain who is currently logged in
     // GUI will pull content string from form
     // timestamp is from system clock
-    public void addNewPost(String contentFromGUI, int userIDFromGUI,  int timestamp) {
+    public void addNewPost(String contentFromGUI, int userIDFromGUI,  int timestamp, String visibilityFromGUI) {
         String[] hashTags = parseForTags(contentFromGUI, "#");
         String[] atTags = parseForTags(contentFromGUI, "@");
-    	Post newPost = new Post(contentFromGUI,userIDFromGUI, timestamp, hashTags, atTags);
+        int postID = posts.size() + 1;
+    	Post newPost = new Post(contentFromGUI,userIDFromGUI, timestamp, hashTags, atTags, postID, visibilityFromGUI);
         posts.ensureCapacity(posts.size() + 1);
         posts.add(newPost);
+        
+        String toFile = "" + userIDFromGUI + "," + postID + ",";
+        for(int i=0; i<hashTags.length; i++){
+        	if(i == 0){
+        		toFile = toFile + hashTags[i];
+        	} else {
+        		toFile = toFile + " " + hashTags[i];
+        	}
+        }
+        
+        toFile = toFile + ",";
+        for(int i=0; i<atTags.length; i++){
+        	if(i == 0){
+        		toFile = toFile + atTags[i];
+        	} else {
+        		toFile = toFile + " " + atTags[i];
+        	}
+        }
+        toFile = toFile + "," + visibilityFromGUI + "," + contentFromGUI + "\r";
+        
+        try {
+            PrintWriter fstream = new PrintWriter(new FileWriter(filename2, true));
+            BufferedWriter out = new BufferedWriter(fstream);
+            out.write(toFile);
+            out.close();
+        }
+        catch (Exception e) {
+            
+        }
+        
+        
     }
     
     public String[] parseForTags(String content, String tagDelimiter){
     	ArrayList<String> parsedTags = new ArrayList<String>();
     	if(content.contains(tagDelimiter)){
     		int start = 0;
-    		int next = 0;
+    		int next = -1;
+    		start = content.indexOf(tagDelimiter);
     		while(start >= 0){
     			next = content.indexOf(" ", start);
     			parsedTags.ensureCapacity(parsedTags.size() + 1);
@@ -61,6 +97,18 @@ public class Database {
         }
         return outputTags;
     }
+    
+    
+    public Post getSinglePost(int postID){
+    	for(int i=0; i<posts.size(); i++){
+    		if(posts.get(i).postID == postID){
+    			return posts.get(i);
+    		}
+    	}
+    	
+    	return new Post(); // returns a post with id -1 and content "Post not found."
+    }
+    
 
     /**
      * Reads users.txt so it can add into the ArrayList all users that were already
@@ -158,11 +206,13 @@ public class Database {
 
     public void login(User user) {
         user.loggedIn = true;
+        currentUser = user.id;
 
     }
 
     public void logout(User user) {
         user.loggedIn = false;
+        currentUser = -1;
 
     }
 }
