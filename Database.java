@@ -93,24 +93,6 @@ public class Database {
             }
         }
         return null;
-        /*try {
-            BufferedReader br = new BufferedReader(new FileReader(filename));
-            String currentLine = br.readLine();
-            while (!currentLine.equals("")) {
-                Scanner s = new Scanner(currentLine).useDelimiter("\t");
-                int id = Integer.valueOf(s.next());
-                if (s.next().equals(username)) {
-                    return id;
-                }
-                else {
-                    currentLine = br.readLine();
-                }
-            }
-            return -1;
-        }
-        catch (Exception e) {
-            return -1;
-        }*/
     }
 
     /**
@@ -145,5 +127,15 @@ public class Database {
         else {
             return 5;
         }
+    }
+
+    public void login(User user) {
+        user.loggedIn = true;
+
+    }
+
+    public void logout(User user) {
+        user.loggedIn = false;
+
     }
 }
