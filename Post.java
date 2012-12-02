@@ -3,8 +3,12 @@ package socialnetwork;
 
 public class Post {
 	
-	public Post(String newContent, int newUserID, int timestamp){
-		
+	public Post(String newContent, int newUserID, int time, String[] htags, String[] aTags){
+		content = newContent;
+		userID = newUserID;
+		timestamp = time;
+		hashtags = htags;
+		atTags = aTags;
 		
 	}
 	

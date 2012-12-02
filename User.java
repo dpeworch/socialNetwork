@@ -11,7 +11,7 @@ public class User {
             this.username = username;
             this.password = password;
             loggedIn = false;
-			subscriptions = new ArrayList();
+			subscriptions = new ArrayList<Integer>();
 	}
 	
 	public void addSub(int subid){

@@ -28,14 +28,38 @@ public class Database {
     // GUI will pull content string from form
     // timestamp is from system clock
     public void addNewPost(String contentFromGUI, int userIDFromGUI,  int timestamp) {
-        Post newPost = new Post(contentFromGUI,userIDFromGUI, timestamp);
+        String[] hashTags = parseForTags(contentFromGUI, "#");
+        String[] atTags = parseForTags(contentFromGUI, "@");
+    	Post newPost = new Post(contentFromGUI,userIDFromGUI, timestamp, hashTags, atTags);
+        posts.ensureCapacity(posts.size() + 1);
         posts.add(newPost);
     }
     
-    public String[] parseForTags(String content){
-        int i = 0; // change when you have actual values
-        String[] tags = new String[i];
-        return tags;
+    public String[] parseForTags(String content, String tagDelimiter){
+    	ArrayList<String> parsedTags = new ArrayList<String>();
+    	if(content.contains(tagDelimiter)){
+    		int start = 0;
+    		int next = 0;
+    		while(start >= 0){
+    			next = content.indexOf(" ", start);
+    			parsedTags.ensureCapacity(parsedTags.size() + 1);
+    			if(next > 0){
+    				parsedTags.add(content.substring(start + 1, next));
+    			} else {
+    				parsedTags.add(content.substring(start + 1));
+    			}
+
+    			start = content.indexOf(tagDelimiter, start + 1);
+    		}
+    		
+    	} else {
+    		return new String[0];
+    	}
+        String[] outputTags = new String[parsedTags.size()];
+        for(int i=0; i<outputTags.length; i++){
+        	outputTags[i] = parsedTags.get(i);
+        }
+        return outputTags;
     }
 
     /**
@@ -50,6 +74,7 @@ public class Database {
                 Scanner s = new Scanner(currentLine).useDelimiter("\t");
                 maxID ++;
                 int id = Integer.valueOf(s.next());
+                users.ensureCapacity(users.size() + 1);
                 users.add(new User(id, s.next(), s.next()));
                 currentLine = br.readLine();
             }
@@ -67,6 +92,7 @@ public class Database {
      */
     public void addNewUser(String username, String password, String email) {
         maxID ++;
+        users.ensureCapacity(users.size() + 1);
         users.add(new User(maxID, username, password));
         try {
             PrintWriter fstream = new PrintWriter(new FileWriter(filename, true));
