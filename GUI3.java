@@ -47,6 +47,12 @@ public class GUI3 extends JFrame {
     private JPanel subscribePanel; //panel with buttons that subscribe to users
     private JButton subscribeTo0; //button to subscribe to user 0
     private JButton subscribeTo1; //button to subscribe to user 1
+    private JButton subscribeTo2; //button to subscribe to user 2
+    private JButton subscribeTo3; //button to subscribe to user 3
+    private JButton unsubscribeFrom0; //button to subscribe to user 0
+    private JButton unsubscribeFrom1; //button to subscribe to user 1
+    private JButton unsubscribeFrom2; //button to subscribe to user 2
+    private JButton unsubscribeFrom3; //button to subscribe to user 3
 
     public GUI3() {
         initComponents();
@@ -116,11 +122,23 @@ public class GUI3 extends JFrame {
         older.setPreferredSize(new Dimension(85, 30));
         newer = new JButton("NEWER");
         newer.setPreferredSize(new Dimension(85, 30));
-        subscribePanel = new JPanel();
-        subscribeTo0 = new JButton("Subscribe to 0");
-        subscribeTo1 = new JButton("Subscribe to 1");
+        subscribePanel = new JPanel(new GridLayout(2,4));
+        subscribeTo0 = new JButton("Subscribe 0");
+        subscribeTo1 = new JButton("Subscribe 1");
+        subscribeTo2 = new JButton("Subscribe 2");
+        subscribeTo3 = new JButton("Subscribe 3");
+        unsubscribeFrom0 = new JButton("Un-subscribe 0");
+        unsubscribeFrom1 = new JButton("Un-subscribe 1");
+        unsubscribeFrom2 = new JButton("Un-subscribe 2");
+        unsubscribeFrom3 = new JButton("Un-subscribe 3");
         subscribePanel.add(subscribeTo0);
         subscribePanel.add(subscribeTo1);
+        subscribePanel.add(subscribeTo2);
+        subscribePanel.add(subscribeTo3);
+        subscribePanel.add(unsubscribeFrom0);
+        subscribePanel.add(unsubscribeFrom1);
+        subscribePanel.add(unsubscribeFrom2);
+        subscribePanel.add(unsubscribeFrom3);
 
         registerPage(-1);
 
@@ -162,13 +180,49 @@ public class GUI3 extends JFrame {
 
         subscribeTo0.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                subscribeTo0ActionPerformed(evt);
+                subscribeToActionPerformed(evt, 0);
             }
         });
 
         subscribeTo1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                subscribeTo1ActionPerformed(evt);
+                subscribeToActionPerformed(evt, 1);
+            }
+        });
+
+        subscribeTo2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                subscribeToActionPerformed(evt, 2);
+            }
+        });
+
+        subscribeTo3.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                subscribeToActionPerformed(evt, 3);
+            }
+        });
+
+        unsubscribeFrom0.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                unsubscribeFromActionPerformed(evt, 0);
+            }
+        });
+
+        unsubscribeFrom1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                unsubscribeFromActionPerformed(evt, 1);
+            }
+        });
+
+        unsubscribeFrom2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                unsubscribeFromActionPerformed(evt, 2);
+            }
+        });
+
+        unsubscribeFrom3.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                unsubscribeFromActionPerformed(evt, 3);
             }
         });
     }
@@ -224,20 +278,16 @@ public class GUI3 extends JFrame {
         }
     }
 
-    private void subscribeTo0ActionPerformed(ActionEvent evt) {
-        if (db.getUsers().size() > 0 &&
-                db.getCurrentUser().getUserId() != 0 &&
-                !db.getCurrentUser().subscribesTo(0)) {
-            db.addSubscription(db.getCurrentUser(), 0);
+    private void subscribeToActionPerformed(ActionEvent evt, int id) {
+        if (db.getUsers().size() > id &&
+                db.getCurrentUser().getUserId() != id &&
+                !db.getCurrentUser().subscribesTo(id)) {
+            db.addSubscription(db.getCurrentUser(), id);
         }
     }
 
-    private void subscribeTo1ActionPerformed(ActionEvent evt) {
-        if (db.getUsers().size() > 1 &&
-                db.getCurrentUser().getUserId() != 1 &&
-                !db.getCurrentUser().subscribesTo(1)) {
-            db.addSubscription(db.getCurrentUser(), 1);
-        }
+    private void unsubscribeFromActionPerformed(ActionEvent evt, int id) {
+        db.removeSubscription(db.getCurrentUser(), id);
     }
 
     private void homePage() { //hardcoded for now
@@ -251,8 +301,6 @@ public class GUI3 extends JFrame {
         formPanel.add(tweetBody[1], 0, 1);
         buttonPanel.add(older);
         buttonPanel.add(newer);
-        buttonPanel.add(subscribeTo0);
-        buttonPanel.add(subscribeTo1);
         centerPanel.add(formPanel, BorderLayout.NORTH);
         centerPanel.add(buttonPanel, BorderLayout.CENTER);
         centerPanel.add(subscribePanel, BorderLayout.SOUTH);
@@ -260,6 +308,8 @@ public class GUI3 extends JFrame {
         newer.setVisible(true);
         subscribeTo0.setVisible(true);
         subscribeTo1.setVisible(true);
+        unsubscribeFrom0.setVisible(true);
+        unsubscribeFrom1.setVisible(true);
         registerSubmit.setVisible(false);
         loginSubmit.setVisible(false);
     }
@@ -318,6 +368,8 @@ public class GUI3 extends JFrame {
         newer.setVisible(false);
         subscribeTo0.setVisible(false);
         subscribeTo1.setVisible(false);
+        unsubscribeFrom0.setVisible(false);
+        unsubscribeFrom1.setVisible(false);
     }
 
     private void loginPage(boolean error) {
@@ -348,6 +400,8 @@ public class GUI3 extends JFrame {
         newer.setVisible(false);
         subscribeTo0.setVisible(false);
         subscribeTo1.setVisible(false);
+        unsubscribeFrom0.setVisible(false);
+        unsubscribeFrom1.setVisible(false);
     }
 
     private void searchResultPage() {
