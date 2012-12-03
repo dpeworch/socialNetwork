@@ -9,8 +9,8 @@ import java.io.*;
 // I am a database
 public class Database {
 
-    private String filename = "C://Users/David/NetBeansProjects/socialNetwork/src/socialnetwork/users.txt"; //or whatever the path is
-    private String filename2 = "posts.txt";
+    private String filename = "C://Users/David/NetBeansProjects/socialNetwork/src/socialnetwork/users.txt";
+    private String filename2 = "C://Users/David/NetBeansProjects/socialNetwork/src/socialnetwork/posts.txt";
     private int maxID = -1;
     
     private int searchIndex; // index for searches spanning multiple function calls, used for getting posts, then getting more posts, then more, etc.
@@ -251,8 +251,30 @@ public class Database {
     	return returnPosts;
     }
     
-    public Post[] getPostsFromSubs(int page){ // page should start at 1
-    	return null;
+    public Post[] getPostsFromSubs(User user, int numPosts) {
+        Post current = null;
+        ArrayList<Post> allYourPostsList = new ArrayList<Post>();
+        Iterator<Post> i = posts.listIterator();
+        while (i.hasNext()) {
+            current = i.next(); 
+            if (current.postID == user.getUserId() || user.subscribesTo(current.postID)) {
+                allYourPostsList.add(0, current);
+            }
+        }
+    	Post[] allYourPostsArray = new Post[allYourPostsList.size()];
+        int counter = 0;
+        Iterator<Post> i2 = allYourPostsList.listIterator();
+        while (i2.hasNext()) {
+            allYourPostsArray[counter] = i2.next();
+            counter ++;
+        }
+        Post[] goodPosts = new Post[numPosts];
+        counter = 0;
+        while (counter < numPosts && counter < allYourPostsArray.length) {
+            goodPosts[counter] = allYourPostsArray[counter];
+            counter ++;
+        }
+        return goodPosts;
     }
 
     /**
