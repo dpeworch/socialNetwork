@@ -15,17 +15,64 @@ public class Database {
     
     private int searchIndex; // index for searches spanning multiple function calls, used for getting posts, then getting more posts, then more, etc.
 
-    private ArrayList<Post> posts;
     private ArrayList<User> users;
+    private ArrayList<Post> posts;
     private BinaryStringSearchTree tags;
     private User currentUser;
 
     public Database() {
-        posts = new ArrayList<Post>();
         users = new ArrayList<User>();
+        posts = new ArrayList<Post>();
         tags = new BinaryStringSearchTree();
         currentUser = null;
         addExistingUsers();
+    }
+
+    /**
+     * Access the ArrayList of users.
+     * @return the ArrayList of users
+     */
+    public ArrayList<User> getUsers() {
+        return users;
+    }
+
+    /**
+     * Access the ArrayList of posts.
+     * @return the ArrayList of posts
+     */
+    public ArrayList<Post> getPosts() {
+        return posts;
+    }
+
+    /**
+     * Access the BinaryStringSearchTree of tags.
+     * @return the BinaryStringSearchTree of tags
+     */
+    public BinaryStringSearchTree getTags() {
+        return tags;
+    }
+
+    /**
+     * Access the current logged-in user.
+     * @return the user, or null if none are logged in
+     */
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    /**
+     * Log in to the system.
+     * @param user The user being logged in.
+     */
+    public void login(User user) {
+        currentUser = user;
+    }
+
+    /**
+     * Log out of the system.
+     */
+    public void logout() {
+        currentUser = null;
     }
 
     // GUI should contain who is currently logged in
@@ -197,6 +244,12 @@ public class Database {
         return null;
     }
 
+    /**
+     * Finds a user in the system with the specified username and password.
+     * @param username The username of the user being searched for.
+     * @param password The password of the user being searched for.
+     * @return the user with the intended username, or null if none are found
+     */
     public User findUser(String username, String password) {
         User current = null;
         Iterator<User> i = users.listIterator();
@@ -256,18 +309,11 @@ public class Database {
         }
     }
 
-    public void login(User user) {
-        currentUser = user;
-    }
-
-    public void logout() {
-        currentUser = null;
-    }
-
-    public User getCurrentUser() {
-        return currentUser;
-    }
-
+    /**
+     * Subscribes a user to another user.
+     * @param subscriber The user who wants to subscribe to someone.
+     * @param userID The ID of the user being subscribed to.
+     */
     public void addSubscription(User subscriber, int userID) {
         subscriber.getSubsAsArrayList().add(userID);
         User current = null;
