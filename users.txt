@@ -1,4 +1,1 @@
-0	person	1234	none
-1	person2	5678	none2
-2	person3	0987	none3
-3	person4	secret	p@umw.edu
+0	person	1234	p@umw.edu	,11	person2	5678	p2@umw.edu	,2	person3	0987	p3@umw.edu	,1,03	person4	6543	p4@umw.edu	,0
