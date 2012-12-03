@@ -12,12 +12,12 @@ public class Database {
     private String filename = "C://Users/David/NetBeansProjects/socialNetwork/src/socialnetwork/users.txt"; //or whatever the path is
     private String filename2 = "posts.txt";
     private int maxID = -1;
-
+    
     private int searchIndex; // index for searches spanning multiple function calls, used for getting posts, then getting more posts, then more, etc.
 
     private ArrayList<Post> posts;
     private ArrayList<User> users;
-    private BinaryStringSearchTree tags;
+    public BinaryStringSearchTree tags;
     private User currentUser;
 
     public Database() {
@@ -26,53 +26,6 @@ public class Database {
         tags = new BinaryStringSearchTree();
         currentUser = null;
         addExistingUsers();
-    }
-
-    /**
-     * Access the ArrayList of users.
-     * @return the ArrayList of users
-     */
-    public ArrayList<User> getUsers() {
-        return users;
-    }
-
-    /**
-     * Access the ArrayList of posts.
-     * @return the ArrayList of posts
-     */
-    public ArrayList<Post> getPosts() {
-        return posts;
-    }
-
-    /**
-     * Access the BinaryStringSearchTree of tags.
-     * @return the BinaryStringSearchTree of tags
-     */
-    public BinaryStringSearchTree getTags() {
-        return tags;
-    }
-
-    /**
-     * Access the current logged-in user.
-     * @return the user, or null if none are logged in
-     */
-    public User getCurrentUser() {
-        return currentUser;
-    }
-
-    /**
-     * Log in to the system.
-     * @param user The user being logged in.
-     */
-    public void login(User user) {
-        currentUser = user;
-    }
-
-    /**
-     * Log out of the system.
-     */
-    public void logout() {
-        currentUser = null;
     }
 
     public void addExistingPosts(){
@@ -89,43 +42,44 @@ public class Database {
                 int timestamp = Integer.valueOf(scanner.next());
                 scanner.useDelimiter("\r");
                 String content = scanner.next();
-
+                
                 // get rid of the comma at the beginning of the string
                 content = content.substring(1);
-
+                
                 String[] htags;
                 String[] utags;
 
-
+                
                 Scanner htagScanner = new Scanner(hashtags).useDelimiter(" ");
                 ArrayList<String> htagAlist = new ArrayList<String>();
                 while (htagScanner.hasNext()) {
                 	htagAlist.ensureCapacity(htagAlist.size() + 1);
                     htagAlist.add(htagScanner.next());
                 }
-
+                
                 Scanner utagScanner = new Scanner(usertags).useDelimiter(" ");
                 ArrayList<String> utagAlist = new ArrayList<String>();
                 while (utagScanner.hasNext()) {
                 	utagAlist.ensureCapacity(utagAlist.size() + 1);
                     utagAlist.add(utagScanner.next());
                 }
-
-
+                
+                
                 htags = new String[htagAlist.size()];
                 utags = new String[utagAlist.size()];
                 for(int i=0; i<htagAlist.size(); i++){
                 	htags[i] = htagAlist.get(i);
                 }
-
+                
                 for(int i=0; i<utagAlist.size(); i++){
                 	utags[i] = utagAlist.get(i);
                 }
-
+                
                 Post toAdd = new Post(content, uid, timestamp, htags, utags, pid, visibility);
-
+                
                 posts.ensureCapacity(posts.size() + 1);
                 posts.add(toAdd);
+                tags.addPost(toAdd);
                 currentLine = br.readLine();
             }
         }
@@ -133,7 +87,9 @@ public class Database {
 
         }
     }
+    
 
+    
     // GUI should contain who is currently logged in
     // GUI will pull content string from form
     // timestamp is from system clock
@@ -144,7 +100,7 @@ public class Database {
     	Post newPost = new Post(contentFromGUI,userIDFromGUI, timestamp, hashTags, atTags, postID, visibilityFromGUI);
         posts.ensureCapacity(posts.size() + 1);
         posts.add(newPost);
-
+        
         String toFile = "" + userIDFromGUI + "," + postID + ",";
         for(int i=0; i<hashTags.length; i++){
         	if(i == 0){
@@ -153,7 +109,7 @@ public class Database {
         		toFile = toFile + " " + hashTags[i];
         	}
         }
-
+        
         toFile = toFile + ",";
         for(int i=0; i<atTags.length; i++){
         	if(i == 0){
@@ -163,7 +119,7 @@ public class Database {
         	}
         }
         toFile = toFile + "," + visibilityFromGUI + "," + timestamp + "," + contentFromGUI + "\r";
-
+        
         try {
             PrintWriter fstream = new PrintWriter(new FileWriter(filename2, true));
             BufferedWriter out = new BufferedWriter(fstream);
@@ -171,12 +127,12 @@ public class Database {
             out.close();
         }
         catch (Exception e) {
-
+            
         }
-
-
+        
+        
     }
-
+    
     public String[] parseForTags(String content, String tagDelimiter){
     	ArrayList<String> parsedTags = new ArrayList<String>();
     	if(content.contains(tagDelimiter)){
@@ -194,7 +150,7 @@ public class Database {
 
     			start = content.indexOf(tagDelimiter, start + 1);
     		}
-
+    		
     	} else {
     		return new String[0];
     	}
@@ -204,8 +160,8 @@ public class Database {
         }
         return outputTags;
     }
-
-
+    
+    
     public Post getSinglePost(int postID){
     	for(int i=0; i<posts.size(); i++){
     		if(posts.get(i).postID == postID){
@@ -221,10 +177,10 @@ public class Database {
     			}
     		}
     	}
-
+    	
     	return null;
     }
-
+    
     public Post[] getPostsByUser(int uid, int page){ // page should start at 1
     	int num = 0;
     	boolean subscribed;
@@ -244,14 +200,14 @@ public class Database {
     			num++;
     		}
     	}
-
+    	
     	return returnPosts;
     }
-
+    
     public Post[] getPostsFromSubs(int page){ // page should start at 1
     	return null;
     }
-
+    
 
     /**
      * Reads users.txt so it can add into the ArrayList all users that were already
@@ -301,7 +257,7 @@ public class Database {
             out.close();
         }
         catch (Exception e) {
-
+            
         }
     }
 
@@ -322,12 +278,6 @@ public class Database {
         return null;
     }
 
-     /**
-     * Finds a user in the system with the specified username and password.
-     * @param username The username of the user being searched for.
-     * @param password The password of the user being searched for.
-     * @return the user with the intended username, or null if none are found
-     */
     public User findUser(String username, String password) {
         User current = null;
         Iterator<User> i = users.listIterator();
@@ -387,11 +337,18 @@ public class Database {
         }
     }
 
-    /**
-     * Subscribes a user to another user.
-     * @param subscriber The user who wants to subscribe to someone.
-     * @param userID The ID of the user being subscribed to.
-     */
+    public void login(User user) {
+        currentUser = user;
+    }
+
+    public void logout() {
+        currentUser = null;
+    }
+
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
     public void addSubscription(User subscriber, int userID) {
         subscriber.getSubsAsArrayList().add(userID);
         User current = null;
@@ -404,54 +361,6 @@ public class Database {
             BufferedWriter out = new BufferedWriter(fstream);
             while (i.hasNext()) {
                 current = i.next();
-                out.write(current.getUserId() + "\t" + current.getUsername() + "\t" + current.getPassword() + "\t" + current.getEmail() + "\t" + ",");
-                for (int j = 0; j < current.getSubsAsArrayList().size(); j++) {
-                    if (j != 0) {
-                        out.write(",");
-                    }
-                    out.write(current.getSubsAsArrayList().get(j).toString());
-                }
-                out.write("\r");
-            }
-            out.close();
-        }
-        catch (Exception e) {
-
-        }
-    }
-
-    /**
-     * Un-subscribes a user from another user.  If the user is not actually subscribed
-     * to the other user, this method does nothing.
-     * @param subscriber The user who wants remove a subscription.
-     * @param userID The ID of the user being un-subscribed from.
-     */
-    public void removeSubscription(User subscriber, int userID) {
-        int counter = 0;
-        Iterator<Integer> i = subscriber.getSubsAsArrayList().listIterator();
-        if (!i.hasNext()) {
-            return;
-        }
-        while (i.hasNext()) {
-            if (i.next() == userID) {
-                subscriber.getSubsAsArrayList().remove(counter);
-                break;
-            }
-            else {
-                counter ++;
-            }
-        }
-        System.out.println(counter);
-        User current = null;
-        Iterator<User> i2 = users.listIterator();
-        try {
-            FileOutputStream erasor = new FileOutputStream(filename);
-            erasor.write((new String()).getBytes());
-            erasor.close();
-            PrintWriter fstream = new PrintWriter(new FileWriter(filename, true));
-            BufferedWriter out = new BufferedWriter(fstream);
-            while (i2.hasNext()) {
-                current = i2.next();
                 out.write(current.getUserId() + "\t" + current.getUsername() + "\t" + current.getPassword() + "\t" + current.getEmail() + "\t" + ",");
                 for (int j = 0; j < current.getSubsAsArrayList().size(); j++) {
                     if (j != 0) {
