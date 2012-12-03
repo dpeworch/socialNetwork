@@ -26,6 +26,54 @@ public class Database {
         tags = new BinaryStringSearchTree();
         currentUser = null;
         addExistingUsers();
+        addExistingPosts();
+    }
+
+    /**
+     * Access the ArrayList of users.
+     * @return the ArrayList of users
+     */
+    public ArrayList<User> getUsers() {
+        return users;
+    }
+
+    /**
+     * Access the ArrayList of posts.
+     * @return the ArrayList of posts
+     */
+    public ArrayList<Post> getPosts() {
+        return posts;
+    }
+
+    /**
+     * Access the BinaryStringSearchTree of tags.
+     * @return the BinaryStringSearchTree of tags
+     */
+    public BinaryStringSearchTree getTags() {
+        return tags;
+    }
+
+    /**
+     * Access the current logged-in user.
+     * @return the user, or null if none are logged in
+     */
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    /**
+     * Log in to the system.
+     * @param user The user being logged in.
+     */
+    public void login(User user) {
+        currentUser = user;
+    }
+
+    /**
+     * Log out of the system.
+     */
+    public void logout() {
+        currentUser = null;
     }
 
     public void addExistingPosts(){
@@ -48,7 +96,6 @@ public class Database {
                 
                 String[] htags;
                 String[] utags;
-
                 
                 Scanner htagScanner = new Scanner(hashtags).useDelimiter(" ");
                 ArrayList<String> htagAlist = new ArrayList<String>();
@@ -207,7 +254,6 @@ public class Database {
     public Post[] getPostsFromSubs(int page){ // page should start at 1
     	return null;
     }
-    
 
     /**
      * Reads users.txt so it can add into the ArrayList all users that were already
@@ -278,6 +324,12 @@ public class Database {
         return null;
     }
 
+    /**
+     * Finds a user in the system with the specified username and password.
+     * @param username The username of the user being searched for.
+     * @param password The password of the user being searched for.
+     * @return the user with the intended username, or null if none are found
+     */
     public User findUser(String username, String password) {
         User current = null;
         Iterator<User> i = users.listIterator();
@@ -290,7 +342,11 @@ public class Database {
         return null;
     }
 
-    //don't think this function is needed
+    /**
+     * Finds a user in the system with the specified user ID.
+     * @param uid The user ID of the user being searched for.
+     * @return the user with the intended user ID, or null if none are found
+     */
     public User findUser(int uid) {
         User current = null;
         Iterator<User> i = users.listIterator();
@@ -337,18 +393,11 @@ public class Database {
         }
     }
 
-    public void login(User user) {
-        currentUser = user;
-    }
-
-    public void logout() {
-        currentUser = null;
-    }
-
-    public User getCurrentUser() {
-        return currentUser;
-    }
-
+    /**
+     * Subscribes a user to another user.
+     * @param subscriber The user who wants to subscribe to someone.
+     * @param userID The ID of the user being subscribed to.
+     */
     public void addSubscription(User subscriber, int userID) {
         subscriber.getSubsAsArrayList().add(userID);
         User current = null;
@@ -361,6 +410,53 @@ public class Database {
             BufferedWriter out = new BufferedWriter(fstream);
             while (i.hasNext()) {
                 current = i.next();
+                out.write(current.getUserId() + "\t" + current.getUsername() + "\t" + current.getPassword() + "\t" + current.getEmail() + "\t" + ",");
+                for (int j = 0; j < current.getSubsAsArrayList().size(); j++) {
+                    if (j != 0) {
+                        out.write(",");
+                    }
+                    out.write(current.getSubsAsArrayList().get(j).toString());
+                }
+                out.write("\r");
+            }
+            out.close();
+        }
+        catch (Exception e) {
+
+        }
+    }
+
+    /**
+     * Un-subscribes a user from another user.  If the user is not actually subscribed
+     * to the other user, this method does nothing.
+     * @param subscriber The user who wants remove a subscription.
+     * @param userID The ID of the user being un-subscribed from.
+     */
+    public void removeSubscription(User subscriber, int userID) {
+        int counter = 0;
+        Iterator<Integer> i = subscriber.getSubsAsArrayList().listIterator();
+        if (!i.hasNext()) {
+            return;
+        }
+        while (i.hasNext()) {
+            if (i.next() == userID) {
+                subscriber.getSubsAsArrayList().remove(counter);
+                break;
+            }
+            else {
+                counter ++;
+            }
+        }
+        User current = null;
+        Iterator<User> i2 = users.listIterator();
+        try {
+            FileOutputStream erasor = new FileOutputStream(filename);
+            erasor.write((new String()).getBytes());
+            erasor.close();
+            PrintWriter fstream = new PrintWriter(new FileWriter(filename, true));
+            BufferedWriter out = new BufferedWriter(fstream);
+            while (i2.hasNext()) {
+                current = i2.next();
                 out.write(current.getUserId() + "\t" + current.getUsername() + "\t" + current.getPassword() + "\t" + current.getEmail() + "\t" + ",");
                 for (int j = 0; j < current.getSubsAsArrayList().size(); j++) {
                     if (j != 0) {
