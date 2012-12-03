@@ -419,4 +419,52 @@ public class Database {
 
         }
     }
+
+    /**
+     * Un-subscribes a user from another user.  If the user is not actually subscribed
+     * to the other user, this method does nothing.
+     * @param subscriber The user who wants remove a subscription.
+     * @param userID The ID of the user being un-subscribed from.
+     */
+    public void removeSubscription(User subscriber, int userID) {
+        int counter = 0;
+        Iterator<Integer> i = subscriber.getSubsAsArrayList().listIterator();
+        if (!i.hasNext()) {
+            return;
+        }
+        while (i.hasNext()) {
+            if (i.next() == userID) {
+                subscriber.getSubsAsArrayList().remove(counter);
+                break;
+            }
+            else {
+                counter ++;
+            }
+        }
+        System.out.println(counter);
+        User current = null;
+        Iterator<User> i2 = users.listIterator();
+        try {
+            FileOutputStream erasor = new FileOutputStream(filename);
+            erasor.write((new String()).getBytes());
+            erasor.close();
+            PrintWriter fstream = new PrintWriter(new FileWriter(filename, true));
+            BufferedWriter out = new BufferedWriter(fstream);
+            while (i2.hasNext()) {
+                current = i2.next();
+                out.write(current.getUserId() + "\t" + current.getUsername() + "\t" + current.getPassword() + "\t" + current.getEmail() + "\t" + ",");
+                for (int j = 0; j < current.getSubsAsArrayList().size(); j++) {
+                    if (j != 0) {
+                        out.write(",");
+                    }
+                    out.write(current.getSubsAsArrayList().get(j).toString());
+                }
+                out.write("\r");
+            }
+            out.close();
+        }
+        catch (Exception e) {
+
+        }
+    }
 }
