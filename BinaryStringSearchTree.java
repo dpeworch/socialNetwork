@@ -1,28 +1,83 @@
 
 package socialnetwork;
 
-public class BinaryStringSearchTree {
+import java.util.ArrayList;
 
-	public BinaryStringSearchTree() {
-		
+/**
+ *
+ * @author Elisabeth
+ *	This class links Nodes into a binary tree. The tree is intended to have additions made to it, and to be traversable via method calls.
+ */
+public class BinaryStringSearchTree {
+	private StringNode root;
+
+
+	/**
+	 * This is the default constructor.
+	 */
+	public BinaryStringSearchTree(){
+		root = null;
 	}
-	
-	public void addNode(String hash){
-		
-		if (exists(hash)){
-			
+
+	public ArrayList<Post> search(String term, boolean add){
+		StringNode current = root;
+		while(current != null && !(current.tag.equals(term))){
+			if(term.compareTo(current.tag) < 0){
+				current = current.left;
+			} else {
+				current = current.right;
+			}
+		}
+		if(current != null && current.tag.equals(term)){
+			ArrayList<Post> thing = current.data;
+			return thing;
+		} else {
+			return null;
 		}
 	}
-	
-	
-	public boolean exists(String hash){
-		boolean thing = true;
-		return thing;
+
+
+	public void addPost(Post post){
+		for(int i=0; i<post.hashtags.length; i++){
+                    ArrayList<Post> tag;
+                    if(root != null){
+			tag = search(post.hashtags[i], true);
+                    } else {
+                        tag = null;
+                    }
+                    if(tag != null){
+			tag.ensureCapacity(tag.size() + 1);
+			tag.add(post);
+                    } else {
+			addTag(post.hashtags[i], post);
+                    }
+		}
 	}
-	
-	
-	
-	StringNode current;
-	StringNode head;
-	
+
+	public void addTag(String tag, Post post){
+		StringNode toAdd = new StringNode(tag);
+		toAdd.addPost(post);
+		StringNode current = root;
+
+		if(root == null){
+			root = toAdd;
+		} else {
+			while((tag.compareTo(current.tag)<0 && current.left != null) || (tag.compareTo(current.tag)>0 && current.right != null)){
+				if(tag.compareTo(current.tag)<0){
+					current = current.left;
+				} else {
+					current = current.right;
+				}
+			}
+
+			if(tag.compareTo(current.tag)<0){
+				current.left = toAdd;
+			} else {
+				current.right = toAdd;
+			}
+		}
+
+	}
+
+
 }
