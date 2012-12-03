@@ -251,30 +251,17 @@ public class Database {
     	return returnPosts;
     }
     
-    public Post[] getPostsFromSubs(User user, int numPosts) {
+    public ArrayList<Post> getPostsFromSubs(User user, int numPosts) {
         Post current = null;
-        ArrayList<Post> allYourPostsList = new ArrayList<Post>();
+        ArrayList<Post> postsList = new ArrayList<Post>();
         Iterator<Post> i = posts.listIterator();
         while (i.hasNext()) {
             current = i.next(); 
             if (current.postID == user.getUserId() || user.subscribesTo(current.postID)) {
-                allYourPostsList.add(0, current);
+                postsList.add(0, current);
             }
         }
-    	Post[] allYourPostsArray = new Post[allYourPostsList.size()];
-        int counter = 0;
-        Iterator<Post> i2 = allYourPostsList.listIterator();
-        while (i2.hasNext()) {
-            allYourPostsArray[counter] = i2.next();
-            counter ++;
-        }
-        Post[] goodPosts = new Post[numPosts];
-        counter = 0;
-        while (counter < numPosts && counter < allYourPostsArray.length) {
-            goodPosts[counter] = allYourPostsArray[counter];
-            counter ++;
-        }
-        return goodPosts;
+        return postsList;
     }
 
     /**
