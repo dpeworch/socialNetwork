@@ -44,6 +44,9 @@ public class GUI3 extends JFrame {
     private JLabel[] tweetBody = new JLabel[2]; //hardcoded tweet messages
     private JButton older; //button to show older tweets
     private JButton newer; //button to show newer tweets
+    private JPanel subscribePanel; //panel with buttons that subscribe to users
+    private JButton subscribeTo0; //button to subscribe to user 0
+    private JButton subscribeTo1; //button to subscribe to user 1
 
     public GUI3() {
         initComponents();
@@ -113,6 +116,11 @@ public class GUI3 extends JFrame {
         older.setPreferredSize(new Dimension(85, 30));
         newer = new JButton("NEWER");
         newer.setPreferredSize(new Dimension(85, 30));
+        subscribePanel = new JPanel();
+        subscribeTo0 = new JButton("Subscribe to 0");
+        subscribeTo1 = new JButton("Subscribe to 1");
+        subscribePanel.add(subscribeTo0);
+        subscribePanel.add(subscribeTo1);
 
         registerPage(-1);
 
@@ -152,7 +160,17 @@ public class GUI3 extends JFrame {
             }
         });
 
-        //pack();
+        subscribeTo0.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                subscribeTo0ActionPerformed(evt);
+            }
+        });
+
+        subscribeTo1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                subscribeTo1ActionPerformed(evt);
+            }
+        });
     }
 
     private void searchActionPerformed(ActionEvent evt) {
@@ -206,6 +224,22 @@ public class GUI3 extends JFrame {
         }
     }
 
+    private void subscribeTo0ActionPerformed(ActionEvent evt) {
+        if (db.getUsers().size() > 0 &&
+                db.getCurrentUser().getUserId() != 0 &&
+                !db.getCurrentUser().subscribesTo(0)) {
+            db.addSubscription(db.getCurrentUser(), 0);
+        }
+    }
+
+    private void subscribeTo1ActionPerformed(ActionEvent evt) {
+        if (db.getUsers().size() > 1 &&
+                db.getCurrentUser().getUserId() != 1 &&
+                !db.getCurrentUser().subscribesTo(1)) {
+            db.addSubscription(db.getCurrentUser(), 1);
+        }
+    }
+
     private void homePage() { //hardcoded for now
         pageTitle.setText("Home Page of " + db.getCurrentUser().getUsername());
         formPanel.removeAll();
@@ -217,10 +251,15 @@ public class GUI3 extends JFrame {
         formPanel.add(tweetBody[1], 0, 1);
         buttonPanel.add(older);
         buttonPanel.add(newer);
+        buttonPanel.add(subscribeTo0);
+        buttonPanel.add(subscribeTo1);
         centerPanel.add(formPanel, BorderLayout.NORTH);
         centerPanel.add(buttonPanel, BorderLayout.CENTER);
+        centerPanel.add(subscribePanel, BorderLayout.SOUTH);
         older.setVisible(true);
         newer.setVisible(true);
+        subscribeTo0.setVisible(true);
+        subscribeTo1.setVisible(true);
         registerSubmit.setVisible(false);
         loginSubmit.setVisible(false);
     }
@@ -277,6 +316,8 @@ public class GUI3 extends JFrame {
         loginSubmit.setVisible(false);
         older.setVisible(false);
         newer.setVisible(false);
+        subscribeTo0.setVisible(false);
+        subscribeTo1.setVisible(false);
     }
 
     private void loginPage(boolean error) {
@@ -298,13 +339,15 @@ public class GUI3 extends JFrame {
         }
         else{
             message.setText("");
+            usernameField.setText("");
+            passwordField.setText("");
         }
         loginSubmit.setVisible(true);
         registerSubmit.setVisible(false);
         older.setVisible(false);
         newer.setVisible(false);
-        usernameField.setText("");
-        passwordField.setText("");
+        subscribeTo0.setVisible(false);
+        subscribeTo1.setVisible(false);
     }
 
     private void searchResultPage() {
