@@ -62,10 +62,10 @@ public class User {
 
     /**
      * Access the user's subscriptions.
-     * @param num the number of subscriptions wanted (takes most recent)
+     * @param numSubs the number of subscriptions wanted (takes most recent)
      * @return the user's subscriptions, as an array
      */
-    public int[] getSubsAsArray(int num) {
+    public int[] getSubsAsArray(int numSubs) {
         int[] allSubs = new int[subscriptions.size()];
         int counter = allSubs.length - 1;
         Iterator<Integer> i = subscriptions.listIterator();
@@ -73,8 +73,8 @@ public class User {
             allSubs[counter] = i.next();
             counter --;
         }
-        int[] subs = new int[num];
-        while (counter < num && counter < allSubs.length) {
+        int[] subs = new int[numSubs];
+        while (counter < numSubs && counter < allSubs.length) {
             subs[counter] = allSubs[counter];
             counter ++;
         }
