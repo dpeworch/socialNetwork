@@ -20,26 +20,51 @@ public class User {
         this.subscriptions = subscriptions;
     }
 
+    /**
+     * Access the user's ID.
+     * @return the user's ID
+     */
     public int getUserId() {
         return id;
     }
 
+    /**
+     * Access the user's username.
+     * @return the user's username
+     */
     public String getUsername() {
         return username;
     }
 
+    /**
+     * Access the user's password.
+     * @return the user's password
+     */
     public String getPassword() {
         return password;
     }
 
+    /**
+     * Access the user's email address.
+     * @return the user's email address
+     */
     public String getEmail() {
         return email;
     }
 
+    /**
+     * Access the user's subscriptions.
+     * @return the user's subscriptions, as an ArrayList
+     */
     public ArrayList<Integer> getSubsAsArrayList() {
         return subscriptions;
     }
 
+    /**
+     * Access the user's subscriptions.
+     * @param num the number of subscriptions wanted (takes most recent)
+     * @return the user's subscriptions, as an array
+     */
     public int[] getSubsAsArray(int num) {
         int[] allSubs = new int[subscriptions.size()];
         int counter = allSubs.length - 1;
@@ -54,6 +79,21 @@ public class User {
             counter ++;
         }
         return subs;
+    }
+
+    /**
+     * Determines if the user has subscribed to a specified user.
+     * @param userID the specified user's ID
+     * @return true if the user has subscribed to the specified user, otherwise false
+     */
+    public boolean subscribesTo(int userID) {
+        Iterator<Integer> i = subscriptions.listIterator();
+        while (i.hasNext()) {
+            if (i.next() == userID) {
+                return true;
+            }
+        }
+        return false;
     }
 
     //moved to database
