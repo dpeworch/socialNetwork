@@ -137,11 +137,20 @@ public class Database {
             BufferedReader br = new BufferedReader(new FileReader(filename));
             String currentLine = br.readLine();
             while (!currentLine.equals("")) {
-                Scanner s = new Scanner(currentLine).useDelimiter("\t");
+                Scanner scanner = new Scanner(currentLine).useDelimiter("\t");
                 maxID ++;
-                int id = Integer.valueOf(s.next());
+                int id = Integer.valueOf(scanner.next());
+                String username = scanner.next();
+                String password = scanner.next();
+                String email = scanner.next();
+                String subscriptions = scanner.next();
+                Scanner subsScanner = new Scanner(subscriptions).useDelimiter(",");
+                ArrayList<Integer> subs = new ArrayList<Integer>();
+                while (subsScanner.hasNext()) {
+                    subs.add(Integer.parseInt(subsScanner.next()));
+                }
                 users.ensureCapacity(users.size() + 1);
-                users.add(new User(id, s.next(), s.next()));
+                users.add(new User(id, username, password, email, subs));
                 currentLine = br.readLine();
             }
         }
@@ -159,11 +168,11 @@ public class Database {
     public void addNewUser(String username, String password, String email) {
         maxID ++;
         users.ensureCapacity(users.size() + 1);
-        users.add(new User(maxID, username, password));
+        users.add(new User(maxID, username, password, email, new ArrayList<Integer>()));
         try {
             PrintWriter fstream = new PrintWriter(new FileWriter(filename, true));
             BufferedWriter out = new BufferedWriter(fstream);
-            out.write(maxID + "\t" + username + "\t" + password + "\t" + email + "\r");
+            out.write(maxID + "\t" + username + "\t" + password + "\t" + email + "\t" + "," + "\r");
             out.close();
         }
         catch (Exception e) {
@@ -257,5 +266,33 @@ public class Database {
 
     public User getCurrentUser() {
         return currentUser;
+    }
+
+    public void addSubscription(User subscriber, int userID) {
+        subscriber.getSubsAsArrayList().add(userID);
+        User current = null;
+        Iterator<User> i = users.listIterator();
+        try {
+            FileOutputStream erasor = new FileOutputStream(filename);
+            erasor.write((new String()).getBytes());
+            erasor.close();
+            PrintWriter fstream = new PrintWriter(new FileWriter(filename, true));
+            BufferedWriter out = new BufferedWriter(fstream);
+            while (i.hasNext()) {
+                current = i.next();
+                out.write(current.getUserId() + "\t" + current.getUsername() + "\t" + current.getPassword() + "\t" + current.getEmail() + "\t" + ",");
+                for (int j = 0; j < current.getSubsAsArrayList().size(); j++) {
+                    if (j != 0) {
+                        out.write(",");
+                    }
+                    out.write(current.getSubsAsArrayList().get(j).toString());
+                }
+                out.write("\r");
+            }
+            out.close();
+        }
+        catch (Exception e) {
+
+        }
     }
 }
