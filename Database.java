@@ -228,27 +228,26 @@ public class Database {
     	return null;
     }
     
-    public Post[] getPostsByUser(int uid, int page){ // page should start at 1
-    	int num = 0;
-    	boolean subscribed;
-    	Post[] returnPosts = new Post[5];
-    	if(page == 1){
-    		searchIndex = posts.size();
-    	}
-    	if(currentUser.getSubsAsArrayList().contains(uid)){
-    		subscribed = true;
-    	} else {
-    		subscribed = false;
-    	}
-    	while(num < 5){
-    		if(posts.get(searchIndex).userID == uid && (subscribed || posts.get(searchIndex).pub == true)){
-    			returnPosts[num] = posts.get(searchIndex);
-    			searchIndex++;
-    			num++;
-    		}
-    	}
-    	
-    	return returnPosts;
+    public ArrayList<Post> getPostsByUser(User user, int numPosts) {
+        Post current = null;
+        ArrayList<Post> postsList = new ArrayList<Post>();
+        Iterator<Post> i = posts.listIterator();
+        while (i.hasNext()) {
+            current = i.next();
+            if (current.userID == user.getUserId()) {
+                postsList.add(0, current);
+            }
+        }
+        ArrayList<Post> limitedPosts = new ArrayList();
+        for (int j = 0; j < numPosts; j++) {
+            if (j < postsList.size()) {
+                limitedPosts.add(postsList.get(j));
+            }
+            else {
+                return limitedPosts;
+            }
+        }
+        return limitedPosts;
     }
     
     public ArrayList<Post> getPostsFromSubs(User user, int numPosts) {
@@ -257,11 +256,20 @@ public class Database {
         Iterator<Post> i = posts.listIterator();
         while (i.hasNext()) {
             current = i.next(); 
-            if (current.postID == user.getUserId() || user.subscribesTo(current.postID)) {
+            if (current.userID == user.getUserId() || user.subscribesTo(current.userID)) {
                 postsList.add(0, current);
             }
         }
-        return postsList;
+        ArrayList<Post> limitedPosts = new ArrayList();
+        for (int j = 0; j < numPosts; j++) {
+            if (j < postsList.size()) {
+                limitedPosts.add(postsList.get(j));
+            }
+            else {
+                return limitedPosts;
+            }
+        }
+        return limitedPosts;
     }
 
     /**
