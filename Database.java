@@ -28,6 +28,65 @@ public class Database {
         addExistingUsers();
     }
 
+    public void addExistingPosts(){
+    	try {
+            BufferedReader br = new BufferedReader(new FileReader(filename2));
+            String currentLine = br.readLine();
+            while (!currentLine.equals("")) {
+                Scanner scanner = new Scanner(currentLine).useDelimiter(",");
+                int uid = Integer.valueOf(scanner.next());
+                int pid = Integer.valueOf(scanner.next());
+                String hashtags = scanner.next();
+                String usertags = scanner.next();
+                String visibility = scanner.next();
+                int timestamp = Integer.valueOf(scanner.next());
+                scanner.useDelimiter("\r");
+                String content = scanner.next();
+                
+                // get rid of the comma at the beginning of the string
+                content = content.substring(1);
+                
+                String[] htags;
+                String[] utags;
+
+                
+                Scanner htagScanner = new Scanner(hashtags).useDelimiter(" ");
+                ArrayList<String> htagAlist = new ArrayList<String>();
+                while (htagScanner.hasNext()) {
+                	htagAlist.ensureCapacity(htagAlist.size() + 1);
+                    htagAlist.add(htagScanner.next());
+                }
+                
+                Scanner utagScanner = new Scanner(usertags).useDelimiter(" ");
+                ArrayList<String> utagAlist = new ArrayList<String>();
+                while (utagScanner.hasNext()) {
+                	utagAlist.ensureCapacity(utagAlist.size() + 1);
+                    utagAlist.add(utagScanner.next());
+                }
+                
+                
+                htags = new String[htagAlist.size()];
+                utags = new String[utagAlist.size()];
+                for(int i=0; i<htagAlist.size(); i++){
+                	htags[i] = htagAlist.get(i);
+                }
+                
+                for(int i=0; i<utagAlist.size(); i++){
+                	utags[i] = utagAlist.get(i);
+                }
+                
+                Post toAdd = new Post(content, uid, timestamp, htags, utags, pid, visibility);
+                
+                posts.ensureCapacity(posts.size() + 1);
+                posts.add(toAdd);
+                currentLine = br.readLine();
+            }
+        }
+        catch (Exception e) {
+
+        }
+    }
+    
     // GUI should contain who is currently logged in
     // GUI will pull content string from form
     // timestamp is from system clock
@@ -56,7 +115,7 @@ public class Database {
         		toFile = toFile + " " + atTags[i];
         	}
         }
-        toFile = toFile + "," + visibilityFromGUI + "," + contentFromGUI + "\r";
+        toFile = toFile + "," + visibilityFromGUI + "," + timestamp + "," + contentFromGUI + "\r";
         
         try {
             PrintWriter fstream = new PrintWriter(new FileWriter(filename2, true));
