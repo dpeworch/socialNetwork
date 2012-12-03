@@ -234,8 +234,72 @@ public class Database {
         Iterator<Post> i = posts.listIterator();
         while (i.hasNext()) {
             current = i.next();
-            if (current.userID == user.getUserId()) {
+            if (current.userID == user.getUserId() && current.pub) {
                 postsList.add(0, current);
+            }
+        }
+        ArrayList<Post> limitedPosts = new ArrayList();
+        for (int j = 0; j < numPosts; j++) {
+            if (j < postsList.size()) {
+                limitedPosts.add(postsList.get(j));
+            }
+            else {
+                return limitedPosts;
+            }
+        }
+        return limitedPosts;
+    }
+
+    /**
+     *
+     * @param viewingUser The user who is logged on (can be null).
+     * @param hashtag The hashtag.
+     * @param numPosts The maximum number of posts wanted.
+     * @return the posts which match the requirements and will be shown on the screen
+     */
+    public ArrayList<Post> getPostsByHashTags(User viewingUser, String hashtag, int numPosts) {
+        Post current = null;
+        ArrayList<Post> postsList = tags.search(hashtag, true);
+        ArrayList<Post> slightlyLimitedPosts = new ArrayList<Post>();
+        Iterator<Post> i = postsList.listIterator();
+        while (i.hasNext()) {
+            current = i.next();
+            if (viewingUser == null && current.pub) {
+                slightlyLimitedPosts.add(0, current);
+            }
+            else if (viewingUser != null) {
+                Iterator<Integer> i2 = viewingUser.getSubsAsArrayList().listIterator();
+                while (i2.hasNext()) {
+                    if (i2.next() == current.userID) {
+                        slightlyLimitedPosts.add(0, current);
+                        break;
+                    }
+                }
+            }
+        }
+        ArrayList<Post> limitedPosts = new ArrayList();
+        for (int j = 0; j < numPosts; j++) {
+            if (j < slightlyLimitedPosts.size()) {
+                limitedPosts.add(slightlyLimitedPosts.get(j));
+            }
+            else {
+                return limitedPosts;
+            }
+        }
+        return limitedPosts;
+    }
+
+    public ArrayList<Post> getPostsByAtTags(User user, int numPosts) {
+        Post current = null;
+        ArrayList<Post> postsList = new ArrayList<Post>();
+        Iterator<Post> i = posts.listIterator();
+        while (i.hasNext()) {
+            current = i.next();
+            for (int j = 0; j < current.atTags.length; j++) {
+                if (current.atTags[j].equals(user.getUsername())) {
+                    postsList.add(0, current);
+                    break;
+                }
             }
         }
         ArrayList<Post> limitedPosts = new ArrayList();
